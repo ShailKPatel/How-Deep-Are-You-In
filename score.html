@@ -292,7 +292,7 @@
 
       const tier = tiers.find(t => score >= t.min && score <= t.max) || tiers[tiers.length - 1];
 
-      document.title = (name ? name + ‘’s score: ‘ + score + ‘/’ + MAX_SCORE : ‘Score: ‘ + score + ‘/’ + MAX_SCORE) + ‘ — Speak Startup?’;
+      document.title = (name ? name + "'s score: " + score + '/' + MAX_SCORE : 'Score: ' + score + '/' + MAX_SCORE) + ' — Speak Startup?';
 
       // Tier badge
       const badge = document.createElement('div');
