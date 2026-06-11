@@ -489,6 +489,28 @@
 
     /* ---- MOBILE ---- */
 
+    footer {
+      text-align: center;
+      padding: 20px 20px 32px;
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+
+    footer a:hover { color: var(--text); }
+
+    footer .sep {
+      margin: 0 8px;
+      opacity: 0.4;
+    }
+
     @media (max-width: 500px) {
       .screen { padding: 64px 16px 36px; }
       .opts { grid-template-columns: 1fr; }
@@ -551,6 +573,12 @@
       </div>
     </div>
   </div>
+
+  <footer>
+    Made by <a href="https://www.linkedin.com/in/shailkpatel/" target="_blank" rel="noopener">Shail K Patel</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/ShailKPatel" target="_blank" rel="noopener">GitHub</a>
+  </footer>
 
   <!-- RESULTS -->
   <div class="screen hidden" id="s-results">
@@ -890,18 +918,20 @@
     }
 
     function doShare() {
-      const tier = tiers.find(t => score >= t.min && score <= t.max) || tiers[tiers.length - 1];
-      const who = userName ? userName + ' scored' : 'I scored';
-      const text = who + ' ' + score + '/' + maxScore + ' on "Speak Startup?" ' + tier.tier + '.\n\n"' + tier.title + '"';
+      const scoreUrl = new URL('score.html', window.location.href);
+      scoreUrl.searchParams.set('score', String(score));
+      if (userName) scoreUrl.searchParams.set('name', userName);
+      const url = scoreUrl.toString();
+
       const btn = document.querySelector('.btn.outline');
 
       if (navigator.share) {
-        navigator.share({ title: 'Speak Startup?', text }).catch(() => {});
+        navigator.share({ title: 'Speak Startup? — my result', url }).catch(() => {});
       } else if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-          const prev = btn.textContent;
-          btn.textContent = 'Copied ✓';
-          setTimeout(() => { btn.textContent = prev; }, 2000);
+        navigator.clipboard.writeText(url).then(() => {
+          const prev = btn.innerHTML;
+          btn.textContent = 'Link copied ✓';
+          setTimeout(() => { btn.innerHTML = prev; }, 2000);
         });
       }
     }

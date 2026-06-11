@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary meta -->
+  <title>Speak Startup? — Result</title>
+  <meta name="description" content="12 questions. 37 points. Find out if you're actually in the startup ecosystem or just LinkedIn-adjacent.">
+
+  <!-- Open Graph / LinkedIn embed -->
+  <meta property="og:site_name" content="Speak Startup?">
+  <meta property="og:title" content="Can you beat my Speak Startup score?">
+  <meta property="og:description" content="12 questions. 37 points. Find out where you actually land in the startup ecosystem.">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Can you beat my Speak Startup score?">
+  <meta name="twitter:description" content="12 questions. 37 points. Find out where you actually land.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F5EF;
+      --surface: #FFFFFF;
+      --text: #111111;
+      --muted: #6B6B6B;
+      --border: #E0DDD5;
+      --accent: #FF4500;
+      --correct: #16A34A;
+      --wrong: #DC2626;
+      --radius: 14px;
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .prog-track {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--border);
+      z-index: 999;
+    }
+    .prog-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 100%;
+    }
+
+    .screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px 48px;
+    }
+
+    .results-inner {
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      animation: fadeUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .r-tier {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .r-name {
+      font-size: clamp(14px, 2vw, 16px);
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .r-score {
+      font-size: clamp(72px, 16vw, 108px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .r-score-max {
+      font-size: 28px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .r-title {
+      font-size: clamp(24px, 5vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
+      margin-top: 6px;
+    }
+
+    .r-msg {
+      font-size: clamp(15px, 2.5vw, 17px);
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 460px;
+      margin: 0 auto 36px;
+    }
+
+    .results-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--text);
+      color: white;
+      padding: 15px 32px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--font);
+      border: none;
+      cursor: pointer;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn:hover { background: var(--accent); transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn.outline {
+      background: transparent;
+      color: var(--muted);
+      border: 2px solid var(--border);
+    }
+    .btn.outline:hover {
+      background: transparent;
+      border-color: var(--text);
+      color: var(--text);
+    }
+
+    .divider {
+      border: none;
+      border-top: 2px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .quiz-cta {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .error-state {
+      color: var(--muted);
+      font-size: 17px;
+      margin-bottom: 24px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 500px) {
+      .screen { padding: 64px 16px 36px; }
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 20px 32px;
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+
+    footer a:hover { color: var(--text); }
+
+    footer .sep {
+      margin: 0 8px;
+      opacity: 0.4;
+    }
+
+    /* Iframe / embed context: hide fixed progress bar to avoid overlap */
+    @media (max-height: 400px) {
+      .prog-track { display: none; }
+      .screen { padding: 20px 16px; min-height: unset; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="prog-track">
+    <div class="prog-fill"></div>
+  </div>
+
+  <div class="screen">
+    <div class="results-inner" id="ri"></div>
+  </div>
+
+  <footer>
+    Made by <a href="https://www.linkedin.com/in/shailkpatel/" target="_blank" rel="noopener">Shail K Patel</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/ShailKPatel" target="_blank" rel="noopener">GitHub</a>
+  </footer>
+
+  <script>
+    const tiers = [
+      {
+        min: 0, max: 8,
+        tier: "Pre-Seed",
+        title: "You came here from LinkedIn.",
+        msg: "You thought 'dogfooding' was a team wellness activity. Honestly? Understandable. The people who scored 37 on this are mostly in Slack threads at 11pm arguing about roadmap prioritization. You have time."
+      },
+      {
+        min: 9, max: 16,
+        tier: "Idea Stage",
+        title: "You've been adjacent to a startup. Once.",
+        msg: "You've heard most of these words before in a podcast you abandoned after three episodes. You nodded in the right moments and nobody asked follow-up questions. Respectable foundation, honestly."
+      },
+      {
+        min: 17, max: 24,
+        tier: "MVP Status",
+        title: "Ships. Calls it a feature.",
+        msg: "You could survive a first-round YC interview. Not pass — survive. You know enough to be dangerous in conversation and not enough to be insufferable at dinner. This is the sweet spot. Stay here as long as you can."
+      },
+      {
+        min: 25, max: 30,
+        tier: "Growth Mode",
+        title: "Extremely online. It shows.",
+        msg: "You have opinions about Notion vs Linear. You’ve sent a Loom that was clearly a meeting. You’ve retweeted a Paul Graham essay and felt something about it. We’re not judging. We’re a little judging."
+      },
+      {
+        min: 31, max: 37,
+        tier: "Series C Energy",
+        title: "You are the Kool-Aid.",
+        msg: "You aced this and you knew you would before you started. You’re currently thinking about how to turn this quiz into an onboarding flow. You have 12 tabs open. Two are issue trackers, one is a competitor’s pricing page. Please go outside."
+      }
+    ];
+
+    const MAX_SCORE = 37;
+
+    function init() {
+      const params = new URLSearchParams(window.location.search);
+
+      const rawScore = parseInt(params.get('score') || '', 10);
+      const score = isNaN(rawScore) ? null : Math.max(0, Math.min(MAX_SCORE, rawScore));
+      const name = (params.get('name') || '').trim().slice(0, 24);
+
+      const ri = document.getElementById('ri');
+
+      if (score === null) {
+        renderError(ri);
+        return;
+      }
+
+      const tier = tiers.find(t => score >= t.min && score <= t.max) || tiers[tiers.length - 1];
+
+      // Update page title dynamically (helps share sheets, not OG crawlers)
+      document.title = (name ? name + '’s score' : 'Score: ' + score + '/' + MAX_SCORE) + ' — Speak Startup?';
+
+      // Tier badge
+      const badge = document.createElement('div');
+      badge.className = 'r-tier';
+      badge.textContent = tier.tier;
+      ri.appendChild(badge);
+
+      // Name line
+      if (name) {
+        const nameEl = document.createElement('p');
+        nameEl.className = 'r-name';
+        nameEl.textContent = name + ' scored';
+        ri.appendChild(nameEl);
+      }
+
+      // Score (animated counter)
+      const scoreEl = document.createElement('div');
+      scoreEl.className = 'r-score';
+      scoreEl.innerHTML = '0<span class="r-score-max"> / ' + MAX_SCORE + '</span>';
+      ri.appendChild(scoreEl);
+
+      // Title
+      const titleEl = document.createElement('h2');
+      titleEl.className = 'r-title';
+      titleEl.textContent = tier.title;
+      ri.appendChild(titleEl);
+
+      // Message
+      const msgEl = document.createElement('p');
+      msgEl.className = 'r-msg';
+      msgEl.textContent = tier.msg;
+      ri.appendChild(msgEl);
+
+      // Divider + CTA
+      const hr = document.createElement('hr');
+      hr.className = 'divider';
+      ri.appendChild(hr);
+
+      const cta = document.createElement('p');
+      cta.className = 'quiz-cta';
+      cta.textContent = 'Think you can do better?';
+      ri.appendChild(cta);
+
+      const btns = document.createElement('div');
+      btns.className = 'results-btns';
+
+      const takeBtn = document.createElement('a');
+      takeBtn.className = 'btn';
+      takeBtn.href = 'index.html';
+      takeBtn.innerHTML = 'Take the quiz &#8594;';
+      btns.appendChild(takeBtn);
+
+      ri.appendChild(btns);
+
+      // Animate score counter
+      let n = 0;
+      const step = Math.max(1, Math.ceil(score / 22));
+      const ticker = setInterval(() => {
+        n = Math.min(n + step, score);
+        scoreEl.innerHTML = n + '<span class="r-score-max"> / ' + MAX_SCORE + '</span>';
+        if (n >= score) clearInterval(ticker);
+      }, 40);
+    }
+
+    function renderError(ri) {
+      document.title = 'Speak Startup?';
+      const msg = document.createElement('p');
+      msg.className = 'error-state';
+      msg.textContent = 'No result found. Did someone share a broken link?';
+      ri.appendChild(msg);
+
+      const btns = document.createElement('div');
+      btns.className = 'results-btns';
+      const link = document.createElement('a');
+      link.className = 'btn';
+      link.href = 'index.html';
+      link.innerHTML = 'Take the quiz &#8594;';
+      btns.appendChild(link);
+      ri.appendChild(btns);
+    }
+
+    init();
+  </script>
+</body>
+</html>
