@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speak Startup?</title>
+  <title>How Deep Are You In?</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -511,11 +511,53 @@
       opacity: 0.4;
     }
 
+    .share-prompt {
+      margin-top: 18px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      animation: fadeUp 0.25s ease forwards;
+      text-align: center;
+    }
+
+    .share-prompt-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .share-prompt-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .share-prompt-row .name-input {
+      margin: 0;
+      animation: none;
+      max-width: 200px;
+    }
+
+    .name-input.invalid { border-color: var(--wrong) !important; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-7px); }
+      60%       { transform: translateX(7px); }
+    }
+
     @media (max-width: 500px) {
       .screen { padding: 64px 16px 36px; }
       .opts { grid-template-columns: 1fr; }
       .buzzwords { gap: 6px; }
       .breakdown { padding: 16px 16px; }
+      .share-prompt-row { flex-direction: column; align-items: center; }
+      .share-prompt-row .name-input { max-width: 100%; width: 100%; }
     }
   </style>
 </head>
@@ -529,8 +571,8 @@
   <div class="screen" id="s-land">
     <div class="land">
       <div class="land-badge">Self-Assessment</div>
-      <h1 class="land-title">Speak<br><span class="accent">Startup?</span></h1>
-      <p class="land-sub">Find out if you're actually in the ecosystem or just LinkedIn-adjacent. 37 points. Judgment is kind of the whole point.</p>
+      <h1 class="land-title">How Deep<br><span class="accent">Are You In?</span></h1>
+      <p class="land-sub">Find out if you're deep in the sauce, just passing through, or still figuring out what a cap table is. No judgment. Well, maybe a little.</p>
       <div class="buzzwords">
         <span class="bw-chip">vibe coding</span>
         <span class="bw-chip">founder mode</span>
@@ -651,7 +693,7 @@
           "A founder's curated public persona on social media"
         ],
         ans: 2, pts: 3,
-        note: "PG's September 2024 essay. Great founders don't hire smart people and get out of the way they stay deep in the details. It started approximately a three-week argument on Twitter about management theory. That argument hasn't fully stopped."
+        note: "PG's September 2024 essay. Great founders don't hire smart people and get out of the way. They stay deep in the details. It started approximately a three-week argument on Twitter about management theory. That argument hasn't fully stopped."
       },
       {
         q: "What is a 'down round'?",
@@ -684,7 +726,7 @@
           "Product-Led Growth"
         ],
         ans: 3, pts: 3,
-        note: "When the product does the selling. Users find it, adopt it, spread it, and eventually convert to paid no enterprise sales team required. Slack, Figma, Notion. CAC theoretically lower. The dream of every B2B SaaS founder for about a decade."
+        note: "When the product does the selling. Users find it, adopt it, spread it, and eventually convert to paid. No enterprise sales team required. Slack, Figma, Notion. CAC theoretically lower. The dream of every B2B SaaS founder for about a decade."
       },
       {
         q: "What does 'ZIRP' stand for, and why do startup people keep saying it?",
@@ -738,13 +780,13 @@
         min: 17, max: 24,
         tier: "MVP Status",
         title: "Ships. Calls it a feature.",
-        msg: "You could survive a first-round YC interview. Not pass survive. You know enough to be dangerous in conversation and not enough to be insufferable at dinner. This is the sweet spot. Stay here as long as you can."
+        msg: "You could survive a first-round YC interview. Not pass. Survive. You know enough to be dangerous in conversation and not enough to be insufferable at dinner. This is the sweet spot. Stay here as long as you can."
       },
       {
         min: 25, max: 30,
         tier: "Growth Mode",
         title: "Extremely online. It shows.",
-        msg: "You have opinions about Notion vs Linear. You've sent a Loom that was clearly a meeting. You've retweeted a Paul Graham essay and felt something about it. We're not judging. We're a little judging."
+        msg: "You have opinions about Notion vs Linear. You've sent a Loom that was clearly a meeting. You've retweeted a Paul Graham essay and felt something about it. We're not judging. We're a little judgy."
       },
       {
         min: 31, max: 37,
@@ -918,15 +960,82 @@
     }
 
     function doShare() {
+      if (!userName) {
+        showNamePrompt();
+        return;
+      }
+      buildAndShare();
+    }
+
+    function showNamePrompt() {
+      const existing = document.getElementById('share-name-prompt');
+      if (existing) {
+        const inp = existing.querySelector('input');
+        inp.style.animation = 'shake 0.3s ease';
+        inp.addEventListener('animationend', () => { inp.style.animation = ''; }, { once: true });
+        inp.focus();
+        return;
+      }
+
+      const wrap = document.createElement('div');
+      wrap.id = 'share-name-prompt';
+      wrap.className = 'share-prompt';
+
+      const lbl = document.createElement('p');
+      lbl.className = 'share-prompt-label';
+      lbl.textContent = 'Who\'s sharing this?';
+      wrap.appendChild(lbl);
+
+      const row = document.createElement('div');
+      row.className = 'share-prompt-row';
+
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.className = 'name-input';
+      inp.placeholder = 'Your name';
+      inp.maxLength = 24;
+      inp.autocomplete = 'off';
+      inp.id = 'share-name-input';
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') confirmShareName(); });
+
+      const go = document.createElement('button');
+      go.className = 'btn';
+      go.innerHTML = 'Share &#8594;';
+      go.onclick = confirmShareName;
+
+      row.appendChild(inp);
+      row.appendChild(go);
+      wrap.appendChild(row);
+
+      document.querySelector('.results-btns').after(wrap);
+      setTimeout(() => inp.focus(), 50);
+    }
+
+    function confirmShareName() {
+      const inp = document.getElementById('share-name-input');
+      const val = inp.value.trim();
+      if (!val) {
+        inp.classList.add('invalid');
+        inp.style.animation = 'shake 0.3s ease';
+        inp.addEventListener('animationend', () => { inp.style.animation = ''; }, { once: true });
+        inp.focus();
+        return;
+      }
+      userName = val;
+      const prompt = document.getElementById('share-name-prompt');
+      if (prompt) prompt.remove();
+      buildAndShare();
+    }
+
+    function buildAndShare() {
       const scoreUrl = new URL('score.html', window.location.href);
       scoreUrl.searchParams.set('score', String(score));
-      if (userName) scoreUrl.searchParams.set('name', userName);
+      scoreUrl.searchParams.set('name', userName);
       const url = scoreUrl.toString();
 
       const btn = document.querySelector('.btn.outline');
-
       if (navigator.share) {
-        navigator.share({ title: 'Speak Startup? — my result', url }).catch(() => {});
+        navigator.share({ title: 'How Deep Are You In? — ' + userName + '\'s result', url }).catch(() => {});
       } else if (navigator.clipboard) {
         navigator.clipboard.writeText(url).then(() => {
           const prev = btn.innerHTML;

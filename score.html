@@ -91,10 +91,11 @@
     }
 
     .r-name {
-      font-size: clamp(14px, 2vw, 16px);
-      color: var(--muted);
-      font-weight: 500;
-      margin-bottom: 2px;
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--text);
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
     }
 
     .r-score {
@@ -257,13 +258,13 @@
         min: 17, max: 24,
         tier: "MVP Status",
         title: "Ships. Calls it a feature.",
-        msg: "You could survive a first-round YC interview. Not pass — survive. You know enough to be dangerous in conversation and not enough to be insufferable at dinner. This is the sweet spot. Stay here as long as you can."
+        msg: "You could survive a first-round YC interview. Not pass. Survive. You know enough to be dangerous in conversation and not enough to be insufferable at dinner. This is the sweet spot. Stay here as long as you can."
       },
       {
         min: 25, max: 30,
         tier: "Growth Mode",
         title: "Extremely online. It shows.",
-        msg: "You have opinions about Notion vs Linear. You’ve sent a Loom that was clearly a meeting. You’ve retweeted a Paul Graham essay and felt something about it. We’re not judging. We’re a little judging."
+        msg: "You have opinions about Notion vs Linear. You’ve sent a Loom that was clearly a meeting. You’ve retweeted a Paul Graham essay and felt something about it. We’re not judging. We’re a little judgy."
       },
       {
         min: 31, max: 37,
@@ -291,8 +292,7 @@
 
       const tier = tiers.find(t => score >= t.min && score <= t.max) || tiers[tiers.length - 1];
 
-      // Update page title dynamically (helps share sheets, not OG crawlers)
-      document.title = (name ? name + '’s score' : 'Score: ' + score + '/' + MAX_SCORE) + ' — Speak Startup?';
+      document.title = (name ? name + ‘’s score: ‘ + score + ‘/’ + MAX_SCORE : ‘Score: ‘ + score + ‘/’ + MAX_SCORE) + ‘ — Speak Startup?’;
 
       // Tier badge
       const badge = document.createElement('div');
@@ -300,11 +300,11 @@
       badge.textContent = tier.tier;
       ri.appendChild(badge);
 
-      // Name line
+      // Name headline
       if (name) {
         const nameEl = document.createElement('p');
         nameEl.className = 'r-name';
-        nameEl.textContent = name + ' scored';
+        nameEl.textContent = name + ' scored on Speak Startup?';
         ri.appendChild(nameEl);
       }
 
